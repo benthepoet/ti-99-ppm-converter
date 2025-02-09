@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     fgets(word, 64, file);
     printf("%s", word);
 
-    int width, height = 0;
+    int width = 0, height = 0;
 
     // Pull width and height
     fscanf(file, "%d", &width);
@@ -44,24 +44,35 @@ int main(int argc, char **argv) {
         pixels[i] = (int *)malloc(width * sizeof(int));
     }
 
-    int row, col = 0;
+    int row = 0, col = 0;
 
+    // Get the red value
     int pixel = fgetc(file);
     while (row < height) {
         pixels[row][col] = pixel;
+
         printf("%d\n", pixel);
         printf("%d %d\n", row, col);
+
         if (++col > width - 1) {
             col = 0;
             row++;
         }
+
+        // Skip green and blue
+        fgetc(file);
+        fgetc(file);
+
+        // Get the next red value
         pixel = fgetc(file);
     }
 
-
-
-    free(pixels);
     fclose(file);
+
+    for (int i = 0; i < height; i++) {
+        free(pixels[i]);
+    }
+    free(pixels);
 
     return 0;
 }
