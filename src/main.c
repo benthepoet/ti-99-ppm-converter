@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                printf("%02X", p);
+                printf("%02x", p);
             }
 
             printf("\n");
