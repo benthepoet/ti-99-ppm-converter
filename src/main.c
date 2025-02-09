@@ -27,10 +27,12 @@ int main(int argc, char **argv) {
 
     // Pull width and height
     fscanf(file, "%d", &width);
-    printf("%d\n", width);
-
     fscanf(file, "%d", &height);
-    printf("%d\n", height);
+    printf("%d %d\n", width, height);
+
+    if (width % 8 || height % 8) {
+        perror("Width and height must be factors of 8.");
+    }
 
     int maxValue = 0;
 
@@ -51,9 +53,6 @@ int main(int argc, char **argv) {
     while (row < height) {
         pixels[row][col] = pixel;
 
-        printf("%d\n", pixel);
-        printf("%d %d\n", row, col);
-
         if (++col > width - 1) {
             col = 0;
             row++;
@@ -69,6 +68,26 @@ int main(int argc, char **argv) {
 
     fclose(file);
 
+    // Convert pixels to VDP tiles
+    for (int i = 0; i < height; i += 8) {
+        for (int j = 0; j < width; j += 8) {
+            for (int k = i; k < i + 8; k++) {
+                int p = 0;
+
+                for (int l = j; l < j + 8; l++) {
+                    if (pixels[k][l] != 0) {
+                        p |= 0x80 >> (l - j);
+                    }
+                }
+
+                printf("%02X", p);
+            }
+
+            printf("\n");
+        }
+    }
+
+    // Clean up
     for (int i = 0; i < height; i++) {
         free(pixels[i]);
     }
