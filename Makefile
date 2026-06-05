@@ -2,5 +2,5 @@ CC = gcc
 CFLAGS = -g -Wall
 OUTDIR = bin
 
-main: $(wildcard src/*.c)
+ppm-converter: $(wildcard src/*.c)
 	$(CC) $(CFLAGS) -o $(OUTDIR)/$@ $^

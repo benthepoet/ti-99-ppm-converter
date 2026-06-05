@@ -1,13 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
+    int debug = 0;
+    const char *filename = NULL;
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0) {
+            debug = 1;
+        } else if (filename == NULL) {
+            filename = argv[i];
+        } else {
+            perror("Usage: ppm-converter [-d|--debug] <filename>");
+            return 1;
+        }
+    }
+
+    if (filename == NULL) {
         perror("Filename is required");
         return 1;
     }
 
-    FILE *file = fopen(argv[1], "r");
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error opening file");
         return 1;
@@ -17,24 +32,31 @@ int main(int argc, char **argv) {
 
     // Pull header
     fgets(word, 64, file);
-    printf("%s", word);
+    if (debug) {
+        printf("%s", word);
+    }
 
     int width = 0, height = 0;
 
     // Pull width and height
     fscanf(file, "%d", &width);
     fscanf(file, "%d", &height);
-    printf("%d %d\n", width, height);
+    if (debug) {
+        printf("%d %d\n", width, height);
+    }
 
     if (width % 8 || height % 8) {
         perror("Width and height must be factors of 8.");
+        return 1;
     }
 
     int maxValue = 0;
 
     // Pull maximum color value
     fscanf(file, "%d\n", &maxValue);
-    printf("%d\n", maxValue);
+    if (debug) {
+        printf("%d\n", maxValue);
+    }
 
     int **pixels;
     pixels = (int **)malloc(height * sizeof(int *));
@@ -74,7 +96,7 @@ int main(int argc, char **argv) {
                 int p = 0;
 
                 for (int l = i; l < i + 8; l++) {
-                    if (pixels[k][l] != 0) {
+                    if (pixels[k][l] == 0) {
                         p |= 0x80 >> (l - i);
                     }
                 }
