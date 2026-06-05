@@ -30,7 +30,7 @@ Internally, width and height must both be divisible by 8.
 From the project root:
 
 ```sh
-make ppm-converter
+make
 ```
 
 This creates:
@@ -75,4 +75,4 @@ For a 16x16 image, order is:
 
 - Use binary PPM pixel data (`P6`-style RGB bytes).
 - The converter currently assumes plain header fields and does not handle PPM comment lines.
-- For best results, use strictly black (`0,0,0`) and white (`255,255,255`) pixels.
+- Use strictly black (`0,0,0`) and white (`255,255,255`) pixels.
