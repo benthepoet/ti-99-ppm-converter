@@ -19,10 +19,6 @@ int main(int argc, char **argv) {
     fgets(word, 64, file);
     printf("%s", word);
 
-    // Pull comment
-    fgets(word, 64, file);
-    printf("%s", word);
-
     int width = 0, height = 0;
 
     // Pull width and height
@@ -67,20 +63,27 @@ int main(int argc, char **argv) {
     }
 
     fclose(file);
+    printf("\n");
 
     // Convert pixels to VDP tiles
-    for (int i = 0; i < height; i += 8) {
-        for (int j = 0; j < width; j += 8) {
-            for (int k = i; k < i + 8; k++) {
+    for (int i = 0; i < width; i += 8) {
+        for (int j = 0; j < height; j += 8) {
+            printf("BYTE ");
+
+            for (int k = j; k < j + 8; k++) {
                 int p = 0;
 
-                for (int l = j; l < j + 8; l++) {
+                for (int l = i; l < i + 8; l++) {
                     if (pixels[k][l] != 0) {
-                        p |= 0x80 >> (l - j);
+                        p |= 0x80 >> (l - i);
                     }
                 }
 
-                printf("%02x", p);
+                if (k % 8 != 0) {
+                    printf(",");
+                }
+
+                printf(">%02x", p);
             }
 
             printf("\n");
